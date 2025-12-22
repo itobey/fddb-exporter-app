@@ -15,7 +15,9 @@ void main() {
         routeKey('GET', url): jsonOk({
           'amountEntries': 100,
           'firstEntryDate': '2025-01-01T00:00:00.000',
+          'mostRecentMissingDay': '2025-01-15T00:00:00.000',
           'entryPercentage': 95.5,
+          'uniqueProducts': 150,
           'averageTotals': {
             'avgTotalCalories': 2000.0,
             'avgTotalFat': 70.0,
@@ -23,22 +25,6 @@ void main() {
             'avgTotalSugar': 50.0,
             'avgTotalProtein': 90.0,
             'avgTotalFibre': 25.0
-          },
-          'last7DaysAverage': {
-            'avgTotalCalories': 2100.0,
-            'avgTotalFat': 75.0,
-            'avgTotalCarbs': 260.0,
-            'avgTotalSugar': 55.0,
-            'avgTotalProtein': 95.0,
-            'avgTotalFibre': 26.0
-          },
-          'last30DaysAverage': {
-            'avgTotalCalories': 2050.0,
-            'avgTotalFat': 72.0,
-            'avgTotalCarbs': 255.0,
-            'avgTotalSugar': 52.0,
-            'avgTotalProtein': 92.0,
-            'avgTotalFibre': 25.5
           },
           'highestCaloriesDay': { 'date': '2025-08-10T00:00:00.000', 'total': 3000.0 },
           'highestFatDay': { 'date': '2025-08-11T00:00:00.000', 'total': 120.0 },

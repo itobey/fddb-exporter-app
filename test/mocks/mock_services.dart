@@ -92,7 +92,9 @@ class MockStatsService implements IStatsService {
   Future<Stats> getStats() async => Stats(
         amountEntries: 1,
         firstEntryDate: DateTime(2025, 1, 1),
+        mostRecentMissingDay: DateTime(2025, 1, 15),
         entryPercentage: 100.0,
+        uniqueProducts: 150,
         averageTotals: Averages(
           avgTotalCalories: 2000.0,
           avgTotalFat: 70.0,
@@ -100,22 +102,6 @@ class MockStatsService implements IStatsService {
           avgTotalSugar: 50.0,
           avgTotalProtein: 90.0,
           avgTotalFibre: 25.0,
-        ),
-        last7DaysAverage: Averages(
-          avgTotalCalories: 2100.0,
-          avgTotalFat: 75.0,
-          avgTotalCarbs: 260.0,
-          avgTotalSugar: 55.0,
-          avgTotalProtein: 95.0,
-          avgTotalFibre: 26.0,
-        ),
-        last30DaysAverage: Averages(
-          avgTotalCalories: 2050.0,
-          avgTotalFat: 72.0,
-          avgTotalCarbs: 255.0,
-          avgTotalSugar: 52.0,
-          avgTotalProtein: 92.0,
-          avgTotalFibre: 25.5,
         ),
         highestCaloriesDay: DayStats(date: DateTime(2025, 8, 10), total: 3000.0),
         highestFatDay: DayStats(date: DateTime(2025, 8, 11), total: 120.0),

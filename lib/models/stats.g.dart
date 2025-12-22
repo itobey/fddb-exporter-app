@@ -9,13 +9,13 @@ part of 'stats.dart';
 Stats _$StatsFromJson(Map<String, dynamic> json) => Stats(
       amountEntries: (json['amountEntries'] as num).toInt(),
       firstEntryDate: DateTime.parse(json['firstEntryDate'] as String),
+      mostRecentMissingDay: json['mostRecentMissingDay'] == null
+          ? null
+          : DateTime.parse(json['mostRecentMissingDay'] as String),
       entryPercentage: (json['entryPercentage'] as num).toDouble(),
+      uniqueProducts: (json['uniqueProducts'] as num).toInt(),
       averageTotals:
           Averages.fromJson(json['averageTotals'] as Map<String, dynamic>),
-      last7DaysAverage:
-          Averages.fromJson(json['last7DaysAverage'] as Map<String, dynamic>),
-      last30DaysAverage:
-          Averages.fromJson(json['last30DaysAverage'] as Map<String, dynamic>),
       highestCaloriesDay:
           DayStats.fromJson(json['highestCaloriesDay'] as Map<String, dynamic>),
       highestFatDay:
@@ -33,10 +33,10 @@ Stats _$StatsFromJson(Map<String, dynamic> json) => Stats(
 Map<String, dynamic> _$StatsToJson(Stats instance) => <String, dynamic>{
       'amountEntries': instance.amountEntries,
       'firstEntryDate': instance.firstEntryDate.toIso8601String(),
+      'mostRecentMissingDay': instance.mostRecentMissingDay?.toIso8601String(),
       'entryPercentage': instance.entryPercentage,
+      'uniqueProducts': instance.uniqueProducts,
       'averageTotals': instance.averageTotals,
-      'last7DaysAverage': instance.last7DaysAverage,
-      'last30DaysAverage': instance.last30DaysAverage,
       'highestCaloriesDay': instance.highestCaloriesDay,
       'highestFatDay': instance.highestFatDay,
       'highestCarbsDay': instance.highestCarbsDay,

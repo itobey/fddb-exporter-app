@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import '../config.dart';
 import '../models/app_error.dart';
 import '../models/stats.dart';
-import 'error_service.dart';
 import 'interfaces/i_error_service.dart';
 import 'interfaces/i_stats_service.dart';
 
@@ -18,6 +17,7 @@ class StatsService implements IStatsService {
   
   /// Get aggregated statistics from the backend.
   /// Maps the JSON payload to a Stats model with error handling.
+  @override
   Future<Stats> getStats() async {
     late String endpoint;
     String? url;
