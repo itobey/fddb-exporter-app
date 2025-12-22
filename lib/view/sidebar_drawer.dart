@@ -69,6 +69,14 @@ class SidebarDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
+                  leading: const Icon(Icons.insights),
+                  title: const Text('Stats Average'),
+                  onTap: () {
+                    Navigator.pop(context); // close drawer
+                    Navigator.pushNamed(context, RouteNames.statsAverage);
+                  },
+                ),
+                ListTile(
                   leading: const Icon(Icons.calculate_sharp),
                   title: const Text('Correlation'),
                   onTap: () {

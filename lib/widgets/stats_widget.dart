@@ -101,9 +101,9 @@ class _StatsDisplayWidgetState extends State<StatsDisplayWidget> {
         children: [
           _buildGeneralStats(),
           const SizedBox(height: 16),
-          _buildAverages('Overall averages', _stats!.averageTotals, leadingIcon: Icons.insights),
-          const SizedBox(height: 16),
           _buildRecordHighs(),
+          const SizedBox(height: 16),
+          _buildAverages('Overall averages', _stats!.averageTotals, leadingIcon: Icons.insights),
         ],
       ),
     );

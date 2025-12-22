@@ -6,6 +6,7 @@ import '../widgets/export_data_widget.dart';
 import '../widgets/product_search_widget.dart';
 import '../widgets/settings_widget.dart';
 import '../widgets/stats_widget.dart';
+import '../widgets/stats_average_widget.dart';
 import 'route_names.dart';
 
 /// Class responsible for generating routes and handling route arguments
@@ -51,6 +52,11 @@ class RouteGenerator {
       case RouteNames.stats:
         return MaterialPageRoute(
           builder: (_) => const StatsDisplayWidget(),
+        );
+        
+      case RouteNames.statsAverage:
+        return MaterialPageRoute(
+          builder: (_) => const StatsAverageWidget(),
         );
         
       case RouteNames.correlation:
