@@ -25,7 +25,7 @@ class StatsService implements IStatsService {
     
     try {
       endpoint = await Config.getEndpoint();
-      url = '$endpoint/api/v1/fddbdata/stats';
+      url = '$endpoint/api/v2/stats';
       
       final response = await http.get(Uri.parse(url))
           .timeout(const Duration(seconds: 30));

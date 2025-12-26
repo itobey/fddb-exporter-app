@@ -101,9 +101,7 @@ class _StatsDisplayWidgetState extends State<StatsDisplayWidget> {
         children: [
           _buildGeneralStats(),
           const SizedBox(height: 16),
-          _buildRecordHighs(),
-          const SizedBox(height: 16),
-          _buildAverages('Overall averages', _stats!.averageTotals, leadingIcon: Icons.insights),
+          _buildRecordHighs()
         ],
       ),
     );
@@ -214,33 +212,6 @@ class _StatsDisplayWidgetState extends State<StatsDisplayWidget> {
       ),
     );
   }
-
-  Widget _buildAverages(String title, Averages a, {IconData? leadingIcon}) {
-    final cs = Theme.of(context).colorScheme;
-    return CardSection(
-      title: title,
-      leadingIcon: leadingIcon,
-      children: [
-        GridView.count(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 2.8,
-          children: [
-            _statBadge(icon: Icons.bolt, label: 'Calories', value: '${a.avgTotalCalories.toStringAsFixed(2)} kcal', color: cs.primary),
-            _statBadge(icon: Icons.fitness_center, label: 'Protein', value: '${a.avgTotalProtein.toStringAsFixed(2)} g', color: const Color(0xFF10B981)),
-            _statBadge(icon: Icons.local_pizza, label: 'Carbs', value: '${a.avgTotalCarbs.toStringAsFixed(2)} g', color: const Color(0xFF374151)),
-            _statBadge(icon: Icons.trending_up, label: 'Fat', value: '${a.avgTotalFat.toStringAsFixed(2)} g', color: cs.secondary),
-            _statBadge(icon: Icons.water_drop, label: 'Sugar', value: '${a.avgTotalSugar.toStringAsFixed(2)} g', color: cs.primary),
-            _statBadge(icon: Icons.grass, label: 'Fiber', value: '${a.avgTotalFibre.toStringAsFixed(2)} g', color: cs.primary),
-          ],
-        ),
-      ],
-    );
-  }
-
 
   // Badge-style tile matching ProductCard macro tiles
   Widget _statBadge({

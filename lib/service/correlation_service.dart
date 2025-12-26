@@ -29,7 +29,7 @@ class CorrelationService implements ICorrelationService {
     
     try {
       endpoint = await Config.getEndpoint();
-      url = '$endpoint/api/v1/correlation';
+      url = '$endpoint/api/v2/correlation';
 
       final response = await http.post(
         Uri.parse(url),

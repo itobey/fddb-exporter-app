@@ -3,6 +3,7 @@ import 'package:fddb_exporter_app/models/daily_result.dart';
 import 'package:fddb_exporter_app/models/product_search_result.dart';
 import 'package:fddb_exporter_app/models/product.dart';
 import 'package:fddb_exporter_app/models/stats.dart';
+import 'package:fddb_exporter_app/models/stats_average.dart';
 import 'package:fddb_exporter_app/service/interfaces/i_correlation_service.dart';
 import 'package:fddb_exporter_app/service/interfaces/i_daily_search_service.dart';
 import 'package:fddb_exporter_app/service/interfaces/i_error_service.dart';
@@ -109,6 +110,20 @@ class MockStatsService implements IStatsService {
         highestProteinDay: DayStats(date: DateTime(2025, 8, 13), total: 150.0),
         highestFibreDay: DayStats(date: DateTime(2025, 8, 14), total: 35.0),
         highestSugarDay: DayStats(date: DateTime(2025, 8, 15), total: 80.0),
+      );
+
+  @override
+  Future<StatsAverage> getAverages(String fromDate, String toDate) async => StatsAverage(
+        fromDate: fromDate,
+        toDate: toDate,
+        averages: Averages(
+          avgTotalCalories: 2000.0,
+          avgTotalFat: 70.0,
+          avgTotalCarbs: 250.0,
+          avgTotalSugar: 50.0,
+          avgTotalProtein: 90.0,
+          avgTotalFibre: 25.0,
+        ),
       );
 }
 

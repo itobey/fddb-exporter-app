@@ -11,7 +11,7 @@ All requests have a 30s timeout and use structured error handling via AppError t
 
 ### 1. Export Data
 
-- GET {BASE_URL}/api/v1/fddbdata/export
+- GET {BASE_URL}/api/v2/fddbdata/export
   - Query parameters:
     - days: integer, number of days to include (required)
     - includeToday: boolean, whether to include today (required)
@@ -19,7 +19,7 @@ All requests have a 30s timeout and use structured error handling via AppError t
   - Errors: 4xx ClientError, 5xx ServerError, TimeoutError, NetworkError, ParseError
   - Used by: ExportService.fetchDataFromFirstEndpoint
 
-- POST {BASE_URL}/api/v1/fddbdata
+- POST {BASE_URL}/api/v2/fddbdata
   - Body (JSON): { "fromDate": "yyyy-MM-dd", "toDate": "yyyy-MM-dd" }
   - Success: 200 OK with JSON map containing exported data
   - Errors: same as above
@@ -27,14 +27,14 @@ All requests have a 30s timeout and use structured error handling via AppError t
 
 ### 2. Daily Nutrition
 
-- GET {BASE_URL}/api/v1/fddbdata/{date}
+- GET {BASE_URL}/api/v2/fddbdata/{date}
   - Path parameter: date in format yyyy-MM-dd
   - Success: 200 OK with DailyResult JSON
   - Used by: DailySearchService.fetchDailyNutrition
 
 ### 3. Product Search
 
-- GET {BASE_URL}/api/v1/fddbdata/products
+- GET {BASE_URL}/api/v2/fddbdata/products
   - Query parameters:
     - name: string, search query (required)
   - Success: 200 OK with JSON array of ProductSearchResult
@@ -42,13 +42,21 @@ All requests have a 30s timeout and use structured error handling via AppError t
 
 ### 4. Statistics
 
-- GET {BASE_URL}/api/v1/fddbdata/stats
+- GET {BASE_URL}/api/v2/stats
   - Success: 200 OK with Stats JSON
   - Used by: StatsService.getStats
 
+- GET {BASE_URL}/api/v2/stats/averages
+  - Query parameters:
+    - fromDate: string (yyyy-MM-dd), date range start (required)
+    - toDate: string (yyyy-MM-dd), date range end (required)
+  - Success: 200 OK with StatsAverage JSON
+  - Errors: 4xx ClientError, 5xx ServerError, TimeoutError, NetworkError, ParseError
+  - Used by: StatsService.getAverages
+
 ### 5. Correlation
 
-- POST {BASE_URL}/api/v1/correlation
+- POST {BASE_URL}/api/v2/correlation
   - Body (JSON):
     - inclusionKeywords: string[]
     - exclusionKeywords: string[]
@@ -72,6 +80,9 @@ The app uses json_serializable for JSON mapping; see the corresponding .g.dart f
 
 - Stats (lib/models/stats.dart)
   - Aggregated counters/statistics for exports and data
+
+- StatsAverage (lib/models/stats_average.dart)
+  - Contains average statistics for a date range (fromDate, toDate, averages)
 
 - CorrelationsData (lib/models/correlations.dart)
   - Contains correlation results for provided keywords and dates

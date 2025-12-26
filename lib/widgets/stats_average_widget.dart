@@ -21,6 +21,7 @@ class _StatsAverageWidgetState extends State<StatsAverageWidget> {
   DateTime? _toDate;
   Averages? _totalAverages;
   Averages? _customAverages;
+  Averages? _last30DaysAverages;
   bool _isLoading = false;
   String? _error;
 
@@ -28,6 +29,7 @@ class _StatsAverageWidgetState extends State<StatsAverageWidget> {
   void initState() {
     super.initState();
     _fetchTotalAverages();
+    _fetchLast30DaysAverages();
   }
 
   void _onItemTapped(int index) {
@@ -54,6 +56,22 @@ class _StatsAverageWidgetState extends State<StatsAverageWidget> {
         _error = 'An error occurred: $e';
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _fetchLast30DaysAverages() async {
+    try {
+      final yesterday = DateTime.now().subtract(const Duration(days: 1));
+      final thirtyDaysAgo = yesterday.subtract(const Duration(days: 29));
+      final fromDateStr = DateFormat('yyyy-MM-dd').format(thirtyDaysAgo);
+      final toDateStr = DateFormat('yyyy-MM-dd').format(yesterday);
+      final statsAverage = await _statsService.getAverages(fromDateStr, toDateStr);
+      setState(() {
+        _last30DaysAverages = statsAverage.averages;
+      });
+    } catch (e) {
+      // Silent fail for last 30 days - we don't want to override the main error state
+      debugPrint('Failed to fetch last 30 days averages: $e');
     }
   }
 
@@ -127,119 +145,126 @@ class _StatsAverageWidgetState extends State<StatsAverageWidget> {
                 ],
               ),
               const SizedBox(height: 16),
-              if (_selectedIndex == 1)
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    border: Border.all(color: Theme.of(context).colorScheme.outline),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
-                      BoxShadow(color: Color(0x14000000), blurRadius: 8, offset: Offset(0, 2)),
-                    ],
-                  ),
-                  padding: const EdgeInsets.all(12),
+              Expanded(
+                child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
-                        readOnly: true,
-                        onTap: () => _showDatePicker(true),
-                        controller: TextEditingController(
-                          text: _fromDate != null ? DateFormat('yyyy-MM-dd').format(_fromDate!) : '',
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'From Date',
-                          prefixIcon: const Icon(Icons.calendar_today),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+                      if (_selectedIndex == 1)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            border: Border.all(color: Theme.of(context).colorScheme.outline),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(color: Color(0x14000000), blurRadius: 8, offset: Offset(0, 2)),
+                            ],
                           ),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.event),
-                            onPressed: () => _showDatePicker(true),
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextField(
+                                readOnly: true,
+                                onTap: () => _showDatePicker(true),
+                                controller: TextEditingController(
+                                  text: _fromDate != null ? DateFormat('yyyy-MM-dd').format(_fromDate!) : '',
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'From Date',
+                                  prefixIcon: const Icon(Icons.calendar_today),
+                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.event),
+                                    onPressed: () => _showDatePicker(true),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              TextField(
+                                readOnly: true,
+                                onTap: () => _showDatePicker(false),
+                                controller: TextEditingController(
+                                  text: _toDate != null ? DateFormat('yyyy-MM-dd').format(_toDate!) : '',
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'To Date',
+                                  prefixIcon: const Icon(Icons.calendar_today),
+                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.event),
+                                    onPressed: () => _showDatePicker(false),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    if (_fromDate != null && _toDate != null) {
+                                      _fetchCustomAverages(_fromDate!, _toDate!);
+                                    }
+                                  },
+                                  icon: const Icon(Icons.search),
+                                  label: const Text('Fetch Data'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Theme.of(context).colorScheme.primary,
+                                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    elevation: 1,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        readOnly: true,
-                        onTap: () => _showDatePicker(false),
-                        controller: TextEditingController(
-                          text: _toDate != null ? DateFormat('yyyy-MM-dd').format(_toDate!) : '',
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'To Date',
-                          prefixIcon: const Icon(Icons.calendar_today),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
-                          ),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.event),
-                            onPressed: () => _showDatePicker(false),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            if (_fromDate != null && _toDate != null) {
-                              _fetchCustomAverages(_fromDate!, _toDate!);
-                            }
-                          },
-                          icon: const Icon(Icons.search),
-                          label: const Text('Fetch Data'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            elevation: 1,
-                          ),
-                        ),
+                      if (_selectedIndex == 1) const SizedBox(height: 16),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        switchInCurve: Curves.easeOut,
+                        switchOutCurve: Curves.easeIn,
+                        child: _isLoading
+                            ? const Center(key: ValueKey('loading'), child: CircularProgressIndicator())
+                            : _error != null
+                                ? Align(
+                                    key: const ValueKey('error'),
+                                    alignment: Alignment.topLeft,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Error: $_error',
+                                          style: const TextStyle(color: Colors.red),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        TextButton(
+                                          onPressed: () {
+                                            if (_selectedIndex == 0) {
+                                              _fetchTotalAverages();
+                                            } else if (_selectedIndex == 1 && _fromDate != null && _toDate != null) {
+                                              _fetchCustomAverages(_fromDate!, _toDate!);
+                                            }
+                                          },
+                                          child: const Text('Retry'),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : _buildAveragesDisplay(),
                       ),
                     ],
                   ),
-                ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  switchInCurve: Curves.easeOut,
-                  switchOutCurve: Curves.easeIn,
-                  child: _isLoading
-                      ? const Center(key: ValueKey('loading'), child: CircularProgressIndicator())
-                      : _error != null
-                          ? Align(
-                              key: const ValueKey('error'),
-                              alignment: Alignment.topLeft,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Error: $_error',
-                                    style: const TextStyle(color: Colors.red),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  TextButton(
-                                    onPressed: () {
-                                      if (_selectedIndex == 0) {
-                                        _fetchTotalAverages();
-                                      } else if (_selectedIndex == 1 && _fromDate != null && _toDate != null) {
-                                        _fetchCustomAverages(_fromDate!, _toDate!);
-                                      }
-                                    },
-                                    child: const Text('Retry'),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : _buildAveragesDisplay(),
                 ),
               ),
             ],
@@ -277,31 +302,60 @@ class _StatsAverageWidgetState extends State<StatsAverageWidget> {
       }
     }
 
+    // For Total view, show both overall and last 30 days
+    if (_selectedIndex == 0) {
+      return Align(
+        alignment: Alignment.topLeft,
+        child: Column(
+          children: [
+            _buildAveragesCard(title: title, averages: averages, cs: cs),
+            if (_last30DaysAverages != null) ...[
+              const SizedBox(height: 16),
+              _buildAveragesCard(
+                title: 'Last 30 days',
+                averages: _last30DaysAverages!,
+                cs: cs,
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
+    // For Custom view, show only the custom averages
     return Align(
       alignment: Alignment.topLeft,
-      child: CardSection(
-        title: title,
-        leadingIcon: Icons.insights,
-        children: [
-          GridView.count(
-            key: ValueKey('averages-$_selectedIndex'),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 2.8,
-            children: [
-              _statBadge(icon: Icons.bolt, label: 'Calories', value: '${averages.avgTotalCalories.toStringAsFixed(2)} kcal', color: cs.primary),
-              _statBadge(icon: Icons.fitness_center, label: 'Protein', value: '${averages.avgTotalProtein.toStringAsFixed(2)} g', color: const Color(0xFF10B981)),
-              _statBadge(icon: Icons.local_pizza, label: 'Carbs', value: '${averages.avgTotalCarbs.toStringAsFixed(2)} g', color: const Color(0xFF374151)),
-              _statBadge(icon: Icons.trending_up, label: 'Fat', value: '${averages.avgTotalFat.toStringAsFixed(2)} g', color: cs.secondary),
-              _statBadge(icon: Icons.water_drop, label: 'Sugar', value: '${averages.avgTotalSugar.toStringAsFixed(2)} g', color: cs.primary),
-              _statBadge(icon: Icons.grass, label: 'Fiber', value: '${averages.avgTotalFibre.toStringAsFixed(2)} g', color: cs.primary),
-            ],
-          ),
-        ],
-      ),
+      child: _buildAveragesCard(title: title, averages: averages, cs: cs),
+    );
+  }
+
+  Widget _buildAveragesCard({
+    required String title,
+    required Averages averages,
+    required ColorScheme cs,
+  }) {
+    return CardSection(
+      title: title,
+      leadingIcon: Icons.insights,
+      children: [
+        GridView.count(
+          key: ValueKey('averages-$title'),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 2.8,
+          children: [
+            _statBadge(icon: Icons.bolt, label: 'Calories', value: '${averages.avgTotalCalories.toStringAsFixed(2)} kcal', color: cs.primary),
+            _statBadge(icon: Icons.fitness_center, label: 'Protein', value: '${averages.avgTotalProtein.toStringAsFixed(2)} g', color: const Color(0xFF10B981)),
+            _statBadge(icon: Icons.local_pizza, label: 'Carbs', value: '${averages.avgTotalCarbs.toStringAsFixed(2)} g', color: const Color(0xFF374151)),
+            _statBadge(icon: Icons.trending_up, label: 'Fat', value: '${averages.avgTotalFat.toStringAsFixed(2)} g', color: cs.secondary),
+            _statBadge(icon: Icons.water_drop, label: 'Sugar', value: '${averages.avgTotalSugar.toStringAsFixed(2)} g', color: cs.primary),
+            _statBadge(icon: Icons.grass, label: 'Fiber', value: '${averages.avgTotalFibre.toStringAsFixed(2)} g', color: cs.primary),
+          ],
+        ),
+      ],
     );
   }
 

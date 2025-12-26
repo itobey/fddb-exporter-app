@@ -10,7 +10,7 @@ void main() {
   group('ProductService', () {
     test('fetchProducts parses list on 200', () async {
       final endpoint = 'http://localhost:8080';
-      final url = '$endpoint/api/v1/fddbdata/products?name=banana';
+      final url = '$endpoint/api/v2/fddbdata/products?name=banana';
       final overrides = FakeHttpOverrides({
         routeKey('GET', url): jsonOk([
           {

@@ -26,7 +26,7 @@ class DailySearchService implements IDailySearchService {
     
     try {
       endpoint = await Config.getEndpoint();
-      url = '$endpoint/api/v1/fddbdata';
+      url = '$endpoint/api/v2/fddbdata';
       final String formattedDate = DateFormat('yyyy-MM-dd').format(date);
       uri = "$url/$formattedDate";
       

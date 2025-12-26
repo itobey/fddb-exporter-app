@@ -10,7 +10,7 @@ void main() {
   group('StatsService', () {
     test('getStats parses Stats on 200', () async {
       final endpoint = 'http://localhost:8080';
-      final url = '$endpoint/api/v1/fddbdata/stats';
+      final url = '$endpoint/api/v2/stats';
       final overrides = FakeHttpOverrides({
         routeKey('GET', url): jsonOk({
           'amountEntries': 100,
