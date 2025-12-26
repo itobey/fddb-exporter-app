@@ -1,7 +1,7 @@
 name: fddb_exporter_app
 description: "A control app for FDDB-Exporter"
 publish_to: 'none'
-version: 1.0.0
+version: 1.1.0
 
 environment:
   sdk: ^3.5.1

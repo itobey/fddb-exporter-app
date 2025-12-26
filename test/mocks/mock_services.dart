@@ -3,6 +3,7 @@ import 'package:fddb_exporter_app/models/daily_result.dart';
 import 'package:fddb_exporter_app/models/product_search_result.dart';
 import 'package:fddb_exporter_app/models/product.dart';
 import 'package:fddb_exporter_app/models/stats.dart';
+import 'package:fddb_exporter_app/models/stats_average.dart';
 import 'package:fddb_exporter_app/service/interfaces/i_correlation_service.dart';
 import 'package:fddb_exporter_app/service/interfaces/i_daily_search_service.dart';
 import 'package:fddb_exporter_app/service/interfaces/i_error_service.dart';
@@ -92,7 +93,9 @@ class MockStatsService implements IStatsService {
   Future<Stats> getStats() async => Stats(
         amountEntries: 1,
         firstEntryDate: DateTime(2025, 1, 1),
+        mostRecentMissingDay: DateTime(2025, 1, 15),
         entryPercentage: 100.0,
+        uniqueProducts: 150,
         averageTotals: Averages(
           avgTotalCalories: 2000.0,
           avgTotalFat: 70.0,
@@ -101,28 +104,26 @@ class MockStatsService implements IStatsService {
           avgTotalProtein: 90.0,
           avgTotalFibre: 25.0,
         ),
-        last7DaysAverage: Averages(
-          avgTotalCalories: 2100.0,
-          avgTotalFat: 75.0,
-          avgTotalCarbs: 260.0,
-          avgTotalSugar: 55.0,
-          avgTotalProtein: 95.0,
-          avgTotalFibre: 26.0,
-        ),
-        last30DaysAverage: Averages(
-          avgTotalCalories: 2050.0,
-          avgTotalFat: 72.0,
-          avgTotalCarbs: 255.0,
-          avgTotalSugar: 52.0,
-          avgTotalProtein: 92.0,
-          avgTotalFibre: 25.5,
-        ),
         highestCaloriesDay: DayStats(date: DateTime(2025, 8, 10), total: 3000.0),
         highestFatDay: DayStats(date: DateTime(2025, 8, 11), total: 120.0),
         highestCarbsDay: DayStats(date: DateTime(2025, 8, 12), total: 400.0),
         highestProteinDay: DayStats(date: DateTime(2025, 8, 13), total: 150.0),
         highestFibreDay: DayStats(date: DateTime(2025, 8, 14), total: 35.0),
         highestSugarDay: DayStats(date: DateTime(2025, 8, 15), total: 80.0),
+      );
+
+  @override
+  Future<StatsAverage> getAverages(String fromDate, String toDate) async => StatsAverage(
+        fromDate: fromDate,
+        toDate: toDate,
+        averages: Averages(
+          avgTotalCalories: 2000.0,
+          avgTotalFat: 70.0,
+          avgTotalCarbs: 250.0,
+          avgTotalSugar: 50.0,
+          avgTotalProtein: 90.0,
+          avgTotalFibre: 25.0,
+        ),
       );
 }
 

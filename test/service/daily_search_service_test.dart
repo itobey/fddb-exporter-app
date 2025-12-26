@@ -11,7 +11,7 @@ void main() {
     test('fetchDailyNutrition parses DailyResult on 200', () async {
       final endpoint = 'http://localhost:8080';
       final date = DateTime(2025, 8, 15);
-      final url = '$endpoint/api/v1/fddbdata/2025-08-15';
+      final url = '$endpoint/api/v2/fddbdata/2025-08-15';
       final overrides = FakeHttpOverrides({
         routeKey('GET', url): jsonOk({
           'date': '2025-08-15T00:00:00.000',

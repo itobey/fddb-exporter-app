@@ -10,7 +10,7 @@ void main() {
   group('CorrelationService', () {
     test('fetchCorrelationData parses CorrelationsData on 200', () async {
       final endpoint = 'http://localhost:8080';
-      final url = '$endpoint/api/v1/correlation';
+      final url = '$endpoint/api/v2/correlation';
       final overrides = FakeHttpOverrides({
         routeKey('POST', url): jsonOk({
           'correlations': {

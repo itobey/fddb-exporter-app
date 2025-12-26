@@ -6,10 +6,10 @@ part 'stats.g.dart';
 class Stats {
   final int amountEntries;
   final DateTime firstEntryDate;
+  final DateTime? mostRecentMissingDay;
   final double entryPercentage;
+  final int uniqueProducts;
   final Averages averageTotals;
-  final Averages last7DaysAverage;
-  final Averages last30DaysAverage;
   final DayStats highestCaloriesDay;
   final DayStats highestFatDay;
   final DayStats highestCarbsDay;
@@ -20,10 +20,10 @@ class Stats {
   Stats({
     required this.amountEntries,
     required this.firstEntryDate,
+    this.mostRecentMissingDay,
     required this.entryPercentage,
+    required this.uniqueProducts,
     required this.averageTotals,
-    required this.last7DaysAverage,
-    required this.last30DaysAverage,
     required this.highestCaloriesDay,
     required this.highestFatDay,
     required this.highestCarbsDay,

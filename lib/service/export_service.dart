@@ -23,7 +23,7 @@ class ExportService implements IExportService {
     
     try {
       endpoint = await Config.getEndpoint();
-      url = '$endpoint/api/v1/fddbdata/export?days=$days&includeToday=$includeToday';
+      url = '$endpoint/api/v2/fddbdata/export?days=$days&includeToday=$includeToday';
       
       final response = await http.get(Uri.parse(url))
           .timeout(const Duration(seconds: 30));
@@ -100,7 +100,7 @@ class ExportService implements IExportService {
     
     try {
       endpoint = await Config.getEndpoint();
-      url = '$endpoint/api/v1/fddbdata';
+      url = '$endpoint/api/v2/fddbdata';
       
       final response = await http.post(
         Uri.parse(url),

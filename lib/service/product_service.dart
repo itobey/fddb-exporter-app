@@ -25,7 +25,7 @@ class ProductService implements IProductService {
     
     try {
       endpoint = await Config.getEndpoint();
-      url = '$endpoint/api/v1/fddbdata/products?name=$name';
+      url = '$endpoint/api/v2/fddbdata/products?name=$name';
       
       final response = await http.get(Uri.parse(url))
           .timeout(const Duration(seconds: 30));

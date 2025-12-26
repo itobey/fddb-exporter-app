@@ -48,7 +48,6 @@ class _StatsDisplayWidgetState extends State<StatsDisplayWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Statistics'),
@@ -102,13 +101,7 @@ class _StatsDisplayWidgetState extends State<StatsDisplayWidget> {
         children: [
           _buildGeneralStats(),
           const SizedBox(height: 16),
-          _buildAverages('Overall averages', _stats!.averageTotals, leadingIcon: Icons.insights),
-          const SizedBox(height: 16),
-          _buildAverages('Last 7 Days Average', _stats!.last7DaysAverage, leadingIcon: Icons.calendar_today),
-          const SizedBox(height: 16),
-          _buildAverages('Last 30 Days Average', _stats!.last30DaysAverage, leadingIcon: Icons.calendar_month),
-          const SizedBox(height: 16),
-          _buildRecordHighs(),
+          _buildRecordHighs()
         ],
       ),
     );
@@ -119,24 +112,54 @@ class _StatsDisplayWidgetState extends State<StatsDisplayWidget> {
   Widget _buildGeneralStats() {
     // Overview cards: Total Entries and Entry Rate
     final cs = Theme.of(context).colorScheme;
-    return Row(
+    final missingDayText = _stats!.mostRecentMissingDay != null
+        ? DateFormat('dd.MM.yyyy').format(_stats!.mostRecentMissingDay!)
+        : 'None';
+
+    return Column(
       children: [
-        Expanded(
-          child: _metricCard(
-            icon: Icons.calendar_today,
-            label: 'Total Entries',
-            value: _stats!.amountEntries.toString(),
-            color: cs.surface,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: _metricCard(
+                icon: Icons.calendar_today,
+                label: 'Total Entries',
+                value: _stats!.amountEntries.toString(),
+                color: cs.surface,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _metricCard(
+                icon: Icons.track_changes,
+                label: 'Entry Rate',
+                value: '${_stats!.entryPercentage.toStringAsFixed(2)}%',
+                color: cs.surface,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _metricCard(
-            icon: Icons.track_changes,
-            label: 'Entry Rate',
-            value: '${_stats!.entryPercentage.toStringAsFixed(2)}%',
-            color: cs.surface,
-          ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _metricCard(
+                icon: Icons.food_bank,
+                label: 'Unique Products',
+                value: _stats!.uniqueProducts.toString(),
+                color: cs.surface,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _metricCard(
+                icon: Icons.event_busy,
+                label: 'Last Missing Day',
+                value: missingDayText,
+                color: cs.surface,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -187,44 +210,6 @@ class _StatsDisplayWidgetState extends State<StatsDisplayWidget> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildAverages(String title, Averages a, {IconData? leadingIcon}) {
-    final cs = Theme.of(context).colorScheme;
-    return CardSection(
-      title: title,
-      leadingIcon: leadingIcon,
-      children: [
-        GridView.count(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 2.8,
-          children: [
-            _statBadge(icon: Icons.bolt, label: 'Calories', value: '${a.avgTotalCalories.toStringAsFixed(2)} kcal', color: cs.primary),
-            _statBadge(icon: Icons.fitness_center, label: 'Protein', value: '${a.avgTotalProtein.toStringAsFixed(2)} g', color: const Color(0xFF10B981)),
-            _statBadge(icon: Icons.local_pizza, label: 'Carbs', value: '${a.avgTotalCarbs.toStringAsFixed(2)} g', color: const Color(0xFF374151)),
-            _statBadge(icon: Icons.trending_up, label: 'Fat', value: '${a.avgTotalFat.toStringAsFixed(2)} g', color: cs.secondary),
-            _statBadge(icon: Icons.water_drop, label: 'Sugar', value: '${a.avgTotalSugar.toStringAsFixed(2)} g', color: cs.primary),
-            _statBadge(icon: Icons.grass, label: 'Fiber', value: '${a.avgTotalFibre.toStringAsFixed(2)} g', color: cs.primary),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _labelValueRow(String label, String value) {
-    // Fallback text row (kept in case we need a simple row somewhere)
-    final cs = Theme.of(context).colorScheme;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant)),
-        Text(value, style: TextStyle(fontWeight: FontWeight.w600, color: cs.primary)),
-      ],
     );
   }
 
@@ -291,7 +276,6 @@ class _StatsDisplayWidgetState extends State<StatsDisplayWidget> {
   }
 
   Widget _buildRecordHighs() {
-    final cs = Theme.of(context).colorScheme;
     return CardSection(
       title: 'Record Highs',
       leadingIcon: Icons.emoji_events,
